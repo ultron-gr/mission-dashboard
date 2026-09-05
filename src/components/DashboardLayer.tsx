@@ -1,4 +1,4 @@
-import { motion, useAnimation } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { TimeDisplay } from './TimeDisplay';
 import { BugattiScene } from './BugattiScene';
 import { MoneyProgress } from './MoneyProgress';
@@ -29,16 +29,7 @@ export function DashboardLayer({
   setTargetPrice,
 }: DashboardLayerProps) {
   const [editorMode, setEditorMode] = useState<'savings' | 'target' | null>(null);
-  const controls = useAnimation();
-
-  // Control the y position based on isRevealed
-  useEffect(() => {
-    if (isRevealed) {
-      controls.start({ y: window.innerHeight * 0.85, transition: { type: 'spring', damping: 20, stiffness: 100 } });
-    } else {
-      controls.start({ y: 0, transition: { type: 'spring', damping: 25, stiffness: 150 } });
-    }
-  }, [isRevealed, controls]);
+  const [activeCarIndex, setActiveCarIndex] = useState(0);
 
   const handleDragEnd = (e: any, info: any) => {
     // Threshold to reveal or hide
@@ -46,11 +37,6 @@ export function DashboardLayer({
       setIsRevealed(true);
     } else if (isRevealed && info.offset.y < -50) {
       setIsRevealed(false);
-    } else {
-      // Snap back to current state if threshold not met
-      setIsRevealed(isRevealed);
-      // Force trigger the effect above
-      controls.start({ y: isRevealed ? window.innerHeight * 0.85 : 0 });
     }
   };
 
@@ -60,6 +46,14 @@ export function DashboardLayer({
     if (editorMode === 'target') setTargetPrice(num);
   };
 
+  const CAR_COLORS = [
+    '255, 120, 0',    // 0: Orange
+    '150, 180, 255',  // 1: Silver Blue
+    '255, 10, 10',    // 2: Angry Red
+    '0, 100, 255'     // 3: Deep Blue
+  ];
+  const activeColorStr = CAR_COLORS[activeCarIndex % CAR_COLORS.length];
+
   return (
     <motion.div
       drag="y"
@@ -68,14 +62,20 @@ export function DashboardLayer({
       dragConstraints={{ top: 0, bottom: window.innerHeight * 0.85 }}
       dragElastic={0.2}
       onDragEnd={handleDragEnd}
-      animate={controls}
+      animate={{
+        y: isRevealed ? window.innerHeight * 0.85 : 0,
+        background: `radial-gradient(circle at top center, rgba(${activeColorStr}, 0.15) 0%, var(--bg-color) 100%)`
+      }}
+      transition={{ 
+        y: { type: 'spring', damping: isRevealed ? 20 : 25, stiffness: isRevealed ? 100 : 150 },
+        background: { duration: 0.6, ease: 'easeInOut' }
+      }}
       style={{
         position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'radial-gradient(circle at top center, #2a1100 0%, var(--bg-color) 100%)',
         zIndex: 10,
         display: 'flex',
         flexDirection: 'column',
@@ -109,9 +109,9 @@ export function DashboardLayer({
           transition: 'opacity 0.3s'
         }}
       >
-        <TimeDisplay />
+        <TimeDisplay activeCarIndex={activeCarIndex} />
         
-        <BugattiScene />
+        <BugattiScene activeCarIndex={activeCarIndex} setActiveCarIndex={setActiveCarIndex} />
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0 1rem' }}>
           <MoneyProgress 

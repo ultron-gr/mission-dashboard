@@ -8,11 +8,24 @@ const IMAGES = [
   '/gallery2/4.png',
 ];
 
-export function BugattiScene() {
-  const [index, setIndex] = useState(0);
+interface BugattiSceneProps {
+  activeCarIndex: number;
+  setActiveCarIndex: (idx: number | ((prev: number) => number)) => void;
+}
 
-  const handleNext = () => setIndex((i) => (i + 1) % IMAGES.length);
-  const handlePrev = () => setIndex((i) => (i - 1 + IMAGES.length) % IMAGES.length);
+const CAR_COLORS = [
+  '255, 120, 0',    // 0: Orange
+  '150, 180, 255',  // 1: Silver Blue
+  '255, 10, 10',    // 2: Angry Red
+  '0, 100, 255'     // 3: Deep Blue
+];
+
+export function BugattiScene({ activeCarIndex, setActiveCarIndex }: BugattiSceneProps) {
+  const handleNext = () => setActiveCarIndex((i) => (i + 1) % IMAGES.length);
+  const handlePrev = () => setActiveCarIndex((i) => (i - 1 + IMAGES.length) % IMAGES.length);
+
+  const activeColorStr = CAR_COLORS[activeCarIndex % CAR_COLORS.length];
+  const activeColorCss = `rgb(${activeColorStr})`;
 
   return (
     <div style={{ 
@@ -35,18 +48,20 @@ export function BugattiScene() {
         padding: '0 1rem'
       }}>
         
-        <button 
+        <motion.button 
           onClick={handlePrev}
-          style={{ background: 'transparent', border: 'none', color: 'var(--accent-red)', fontSize: '3rem', cursor: 'pointer', fontFamily: 'var(--font-mono)', padding: '0 1rem', zIndex: 10 }}
+          animate={{ color: activeColorCss }}
+          transition={{ duration: 0.6, ease: 'easeInOut' }}
+          style={{ background: 'transparent', border: 'none', fontSize: '3rem', cursor: 'pointer', fontFamily: 'var(--font-mono)', padding: '0 1rem', zIndex: 10 }}
         >
           &lt;
-        </button>
+        </motion.button>
 
         <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <AnimatePresence mode="wait">
             <motion.img 
-              key={index}
-              src={IMAGES[index]} 
+              key={activeCarIndex}
+              src={IMAGES[activeCarIndex]} 
               alt="Bugatti"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -63,26 +78,28 @@ export function BugattiScene() {
           </AnimatePresence>
         </div>
 
-        <button 
+        <motion.button 
           onClick={handleNext}
-          style={{ background: 'transparent', border: 'none', color: 'var(--accent-red)', fontSize: '3rem', cursor: 'pointer', fontFamily: 'var(--font-mono)', padding: '0 1rem', zIndex: 10 }}
+          animate={{ color: activeColorCss }}
+          transition={{ duration: 0.6, ease: 'easeInOut' }}
+          style={{ background: 'transparent', border: 'none', fontSize: '3rem', cursor: 'pointer', fontFamily: 'var(--font-mono)', padding: '0 1rem', zIndex: 10 }}
         >
           &gt;
-        </button>
+        </motion.button>
 
       </div>
 
       {/* Small indicator dots below */}
       <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.5rem' }}>
         {IMAGES.map((_, idx) => (
-          <div 
+          <motion.div 
             key={idx} 
+            animate={{ background: idx === activeCarIndex ? activeColorCss : '#333' }}
+            transition={{ duration: 0.6, ease: 'easeInOut' }}
             style={{
               width: '6px', 
               height: '6px', 
-              borderRadius: '50%', 
-              background: idx === index ? 'var(--accent-red)' : '#333',
-              transition: 'background 0.3s'
+              borderRadius: '50%'
             }} 
           />
         ))}

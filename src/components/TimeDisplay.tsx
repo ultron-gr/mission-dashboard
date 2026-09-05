@@ -2,12 +2,21 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { getTimeStats } from '../utils/time';
 
-export function TimeDisplay() {
+interface TimeDisplayProps {
+  activeCarIndex?: number;
+}
+
+const CAR_COLORS = [
+  '255, 120, 0',    // 0: Orange
+  '150, 180, 255',  // 1: Silver Blue
+  '255, 10, 10',    // 2: Angry Red
+  '0, 100, 255'     // 3: Deep Blue
+];
+
+export function TimeDisplay({ activeCarIndex = 0 }: TimeDisplayProps) {
   const [stats, setStats] = useState(() => getTimeStats());
 
   useEffect(() => {
-    // Update every minute is sufficient, but every second feels more alive if we showed seconds
-    // Since we only show days, daily or hourly is enough. We'll do minute-ly to catch midnight precisely.
     const interval = setInterval(() => {
       setStats(getTimeStats());
     }, 60000);
@@ -16,10 +25,6 @@ export function TimeDisplay() {
 
   const { remainingDays, elapsedPercentage } = stats;
 
-  // Visual threat calculation
-  // > 90% elapsed: High Danger
-  // > 50% elapsed: Medium Danger
-  // < 50% elapsed: Low Danger
   let dangerClass = 'var(--danger-low)';
   let shadowClass = 'none';
   if (elapsedPercentage > 50) {
@@ -31,9 +36,11 @@ export function TimeDisplay() {
     shadowClass = '0 0 20px rgba(255, 17, 17, 0.6)';
   }
 
-  // Format with commas, e.g. "14,502"
   const formattedDays = remainingDays.toLocaleString();
 
+  // Pick the color based on the car index
+  const baseColorStr = CAR_COLORS[activeCarIndex % CAR_COLORS.length];
+  
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '2rem 0' }}>
       <div 
@@ -67,36 +74,44 @@ export function TimeDisplay() {
         
         {/* --- LAMP EFFECT START --- */}
         {/* Main downward spotlight beam */}
-        <div style={{
+        <motion.div style={{
           position: 'absolute',
           top: '4px',
           left: '50%',
           transform: 'translateX(-50%)',
-          width: '300px', // Slightly wider for a softer fade
+          width: '300px',
           height: '140px',
-          background: 'conic-gradient(from 90deg at 50% -10%, transparent 0deg, rgba(255, 42, 0, 0.4) 90deg, transparent 180deg)',
           filter: 'blur(15px)',
           opacity: 0.9,
           zIndex: -1,
           pointerEvents: 'none',
           WebkitMaskImage: 'radial-gradient(circle at top, black 0%, transparent 70%)',
           maskImage: 'radial-gradient(circle at top, black 0%, transparent 70%)'
-        }} />
+        }} 
+        animate={{
+          background: `conic-gradient(from 90deg at 50% -10%, transparent 0deg, rgba(${baseColorStr}, 0.4) 90deg, transparent 180deg)`
+        }}
+        transition={{ duration: 0.6, ease: 'easeInOut' }}
+        />
 
         {/* Core bright glow at the source line */}
-        <div style={{
+        <motion.div style={{
           position: 'absolute',
-          top: '-1px', // slightly above to center on the bar
+          top: '-1px',
           left: '50%',
           transform: 'translateX(-50%)',
           width: '120px',
           height: '2px',
-          background: 'rgba(255, 42, 0, 0.8)',
           filter: 'blur(2px)',
-          boxShadow: '0 0 15px 4px rgba(255, 42, 0, 0.5), 0 0 40px 15px rgba(255, 42, 0, 0.15)',
           zIndex: 1,
           pointerEvents: 'none'
-        }} />
+        }} 
+        animate={{
+          background: `rgba(${baseColorStr}, 0.8)`,
+          boxShadow: `0 0 15px 4px rgba(${baseColorStr}, 0.5), 0 0 40px 15px rgba(${baseColorStr}, 0.15)`
+        }}
+        transition={{ duration: 0.6, ease: 'easeInOut' }}
+        />
         {/* --- LAMP EFFECT END --- */}
 
         {/* Actual Progress Fill */}
