@@ -73,44 +73,85 @@ export function TimeDisplay({ activeCarIndex = 0 }: TimeDisplayProps) {
       }}>
         
         {/* --- LAMP EFFECT START --- */}
-        {/* Main downward spotlight beam */}
+        {/* Main downward spotlight beam expanding with tube */}
         <motion.div style={{
           position: 'absolute',
           top: '4px',
           left: '50%',
           transform: 'translateX(-50%)',
-          width: '300px',
+          transformOrigin: 'top center',
+          width: '100%',
+          maxWidth: '320px',
           height: '140px',
           filter: 'blur(15px)',
-          opacity: 0.9,
-          zIndex: -1,
+          zIndex: 0,
           pointerEvents: 'none',
           WebkitMaskImage: 'radial-gradient(circle at top, black 0%, transparent 70%)',
           maskImage: 'radial-gradient(circle at top, black 0%, transparent 70%)'
         }} 
+        initial={{ scaleX: 0, opacity: 0 }}
         animate={{
+          scaleX: 1,
+          opacity: 0.9,
           background: `conic-gradient(from 90deg at 50% -10%, transparent 0deg, rgba(${baseColorStr}, 0.4) 90deg, transparent 180deg)`
         }}
-        transition={{ duration: 0.6, ease: 'easeInOut' }}
+        transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
         />
 
-        {/* Core bright glow at the source line */}
-        <motion.div style={{
-          position: 'absolute',
-          top: '-1px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '120px',
-          height: '2px',
-          filter: 'blur(2px)',
-          zIndex: 1,
-          pointerEvents: 'none'
-        }} 
-        animate={{
-          background: `rgba(${baseColorStr}, 0.8)`,
-          boxShadow: `0 0 15px 4px rgba(${baseColorStr}, 0.5), 0 0 40px 15px rgba(${baseColorStr}, 0.15)`
-        }}
-        transition={{ duration: 0.6, ease: 'easeInOut' }}
+        {/* Fluorescent Tube Light - Expanding from Center to cover the Underline */}
+        <motion.div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            borderRadius: '2px',
+            transformOrigin: 'center',
+            pointerEvents: 'none',
+            zIndex: 1,
+            background: `rgba(${baseColorStr}, 0.75)`,
+            boxShadow: `0 0 10px 2px rgba(${baseColorStr}, 0.6), 0 0 25px 6px rgba(${baseColorStr}, 0.3)`
+          }}
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={{
+            scaleX: [0, 0.08, 0.05, 0.4, 1],
+            opacity: [0, 0.9, 0.4, 0.9, 1]
+          }}
+          transition={{
+            duration: 0.85,
+            times: [0, 0.15, 0.25, 0.5, 1],
+            ease: 'easeOut',
+            delay: 0.2
+          }}
+        />
+
+        {/* Super-bright inner neon tube core wire */}
+        <motion.div
+          style={{
+            position: 'absolute',
+            top: '1px',
+            left: 0,
+            width: '100%',
+            height: '2px',
+            borderRadius: '1px',
+            transformOrigin: 'center',
+            pointerEvents: 'none',
+            zIndex: 2,
+            background: '#ffffff',
+            boxShadow: `0 0 6px #fff, 0 0 14px rgba(${baseColorStr}, 0.9)`
+          }}
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={{
+            scaleX: [0, 0.1, 0.08, 0.5, 1],
+            opacity: [0, 1, 0.5, 1, 1]
+          }}
+          transition={{
+            duration: 0.85,
+            times: [0, 0.15, 0.25, 0.5, 1],
+            ease: 'easeOut',
+            delay: 0.2
+          }}
         />
         {/* --- LAMP EFFECT END --- */}
 
@@ -121,12 +162,12 @@ export function TimeDisplay({ activeCarIndex = 0 }: TimeDisplayProps) {
             background: dangerClass, 
             boxShadow: shadowClass,
             position: 'relative',
-            zIndex: 2,
+            zIndex: 3,
             borderRadius: '2px'
           }}
           initial={{ width: 0 }}
           animate={{ width: `${elapsedPercentage}%` }}
-          transition={{ duration: 2, ease: 'easeOut' }}
+          transition={{ duration: 1.8, ease: 'easeOut', delay: 0.9 }}
         />
       </div>
     </div>

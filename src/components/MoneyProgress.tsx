@@ -21,7 +21,6 @@ export function MoneyProgress({ savedAmount, targetPrice, savingsHistory, onClic
   const W = 500;
   const H = 50;
   const PADDING_Y = 10;
-  const PADDING_X = 0;
 
   const { pathD, areaD, plottedPoints, activeWidth } = useMemo(() => {
     // Mathematical horizontal progress based strictly on target
@@ -98,8 +97,11 @@ export function MoneyProgress({ savedAmount, targetPrice, savingsHistory, onClic
     <div style={{ width: '100%', maxWidth: '500px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
       
       {/* SVG Container / Progress Bar */}
-      <div 
+      <motion.div 
         onClick={onClick}
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
         style={{ 
           position: 'relative',
           width: '100%', 
@@ -149,7 +151,14 @@ export function MoneyProgress({ savedAmount, targetPrice, savingsHistory, onClic
 
           {/* Active Area Mask to restrict drawing beyond activeWidth */}
           <clipPath id="active-clip">
-            <rect x="0" y="0" width={activeWidth} height={H} />
+            <motion.rect 
+              x="0" 
+              y="0" 
+              height={H}
+              initial={{ width: 0 }}
+              animate={{ width: activeWidth }}
+              transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
+            />
           </clipPath>
 
           <g clipPath="url(#active-clip)">
@@ -161,7 +170,7 @@ export function MoneyProgress({ savedAmount, targetPrice, savingsHistory, onClic
             <motion.path 
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
+              transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
               d={pathD} 
               fill="none" 
               stroke="#ff2a00" 
@@ -177,7 +186,7 @@ export function MoneyProgress({ savedAmount, targetPrice, savingsHistory, onClic
             <motion.circle 
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1.2 }}
+              transition={{ delay: 1.8, duration: 0.3 }}
               cx={endPoint.x} 
               cy={endPoint.y} 
               r="2.5" 
@@ -187,10 +196,21 @@ export function MoneyProgress({ savedAmount, targetPrice, savingsHistory, onClic
           )}
 
           {/* Target Reference Line (if max isn't hit) */}
-          <line x1={activeWidth} y1={PADDING_Y} x2={W} y2={PADDING_Y} stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="2 4" />
+          <motion.line 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+            x1={activeWidth} 
+            y1={PADDING_Y} 
+            x2={W} 
+            y2={PADDING_Y} 
+            stroke="rgba(255,255,255,0.05)" 
+            strokeWidth="1" 
+            strokeDasharray="2 4" 
+          />
 
           {/* Hover Interaction Overlay */}
-          {plottedPoints.map((pt, i) => {
+          {plottedPoints.map((_, i) => {
             const sliceW = activeWidth / plottedPoints.length;
             const sliceX = i * sliceW;
             return (
@@ -230,9 +250,14 @@ export function MoneyProgress({ savedAmount, targetPrice, savingsHistory, onClic
             )}
           </AnimatePresence>
         </svg>
-      </div>
+      </motion.div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}
+      >
         <div className="font-mono text-secondary" style={{ fontSize: '0.75rem', letterSpacing: '0.1em' }}>
           <span style={{ color: 'var(--text-primary)', fontSize: '1rem' }}>₹{savedAmount.toLocaleString()}</span> SAVED<br/>
           {displayPercentage}% / ACQUISITION
@@ -253,7 +278,7 @@ export function MoneyProgress({ savedAmount, targetPrice, savingsHistory, onClic
         <div className="font-mono text-secondary" style={{ fontSize: '0.75rem', letterSpacing: '0.1em', textAlign: 'right' }}>
           TARGET <br/> <span style={{ color: 'rgba(255,255,255,0.4)' }}>₹{targetPrice ? targetPrice.toLocaleString() : 'UNSET'}</span>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
