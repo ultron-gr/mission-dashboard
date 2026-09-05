@@ -64,11 +64,11 @@ export function DashboardLayer({
       onDragEnd={handleDragEnd}
       animate={{
         y: isRevealed ? window.innerHeight * 0.85 : 0,
-        background: `radial-gradient(circle at top center, rgba(${activeColorStr}, 0.15) 0%, var(--bg-color) 100%)`
+        backgroundImage: `radial-gradient(circle at top center, rgba(${activeColorStr}, 0.2) 0%, rgba(5, 5, 5, 0) 100%)`
       }}
       transition={{ 
         y: { type: 'spring', damping: isRevealed ? 20 : 25, stiffness: isRevealed ? 100 : 150 },
-        background: { duration: 0.6, ease: 'easeInOut' }
+        backgroundImage: { duration: 0.6, ease: 'easeInOut' }
       }}
       style={{
         position: 'absolute',
@@ -76,6 +76,7 @@ export function DashboardLayer({
         left: 0,
         right: 0,
         bottom: 0,
+        backgroundColor: '#050505',
         zIndex: 10,
         display: 'flex',
         flexDirection: 'column',
