@@ -73,32 +73,51 @@ export function TimeDisplay({ activeCarIndex = 0 }: TimeDisplayProps) {
       }}>
         
         {/* --- LAMP EFFECT START --- */}
-        {/* Main downward spotlight beam expanding with tube */}
+        {/* Main downward spotlight beam - perfectly centered & symmetrical */}
         <motion.div style={{
           position: 'absolute',
           top: '4px',
-          left: '50%',
-          transform: 'translateX(-50%)',
+          width: '360px',
+          left: 'calc(50% - 180px)',
           transformOrigin: 'top center',
-          width: '100%',
-          maxWidth: '320px',
-          height: '140px',
-          filter: 'blur(15px)',
+          height: '180px',
+          filter: 'blur(18px)',
           zIndex: 0,
           pointerEvents: 'none',
-          WebkitMaskImage: 'radial-gradient(circle at top, black 0%, transparent 70%)',
-          maskImage: 'radial-gradient(circle at top, black 0%, transparent 70%)'
+          background: `radial-gradient(ellipse 65% 100% at 50% 0%, rgba(${baseColorStr}, 0.45) 0%, rgba(${baseColorStr}, 0.15) 50%, transparent 80%)`,
+          WebkitMaskImage: 'radial-gradient(ellipse 80% 100% at 50% 0%, black 30%, transparent 85%)',
+          maskImage: 'radial-gradient(ellipse 80% 100% at 50% 0%, black 30%, transparent 85%)'
         }} 
         initial={{ scaleX: 0, opacity: 0 }}
         animate={{
           scaleX: 1,
-          opacity: 0.9,
-          background: `conic-gradient(from 90deg at 50% -10%, transparent 0deg, rgba(${baseColorStr}, 0.4) 90deg, transparent 180deg)`
+          opacity: 0.95
         }}
-        transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
         />
 
-        {/* Fluorescent Tube Light - Expanding from Center to cover the Underline */}
+        {/* Focused central downlight beam for crisp middle radiance */}
+        <motion.div style={{
+          position: 'absolute',
+          top: '4px',
+          width: '240px',
+          left: 'calc(50% - 120px)',
+          transformOrigin: 'top center',
+          height: '90px',
+          filter: 'blur(10px)',
+          zIndex: 0,
+          pointerEvents: 'none',
+          background: `radial-gradient(ellipse 55% 100% at 50% 0%, rgba(${baseColorStr}, 0.6) 0%, rgba(${baseColorStr}, 0.18) 60%, transparent 100%)`
+        }}
+        initial={{ scaleX: 0, opacity: 0 }}
+        animate={{
+          scaleX: 1,
+          opacity: 0.9
+        }}
+        transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+        />
+
+        {/* Fluorescent Tube Light - Expanding smoothly from Center to cover the Underline */}
         <motion.div
           style={{
             position: 'absolute',
@@ -110,19 +129,18 @@ export function TimeDisplay({ activeCarIndex = 0 }: TimeDisplayProps) {
             transformOrigin: 'center',
             pointerEvents: 'none',
             zIndex: 1,
-            background: `rgba(${baseColorStr}, 0.75)`,
+            background: `rgba(${baseColorStr}, 0.8)`,
             boxShadow: `0 0 10px 2px rgba(${baseColorStr}, 0.6), 0 0 25px 6px rgba(${baseColorStr}, 0.3)`
           }}
           initial={{ scaleX: 0, opacity: 0 }}
           animate={{
-            scaleX: [0, 0.08, 0.05, 0.4, 1],
-            opacity: [0, 0.9, 0.4, 0.9, 1]
+            scaleX: 1,
+            opacity: 1
           }}
           transition={{
-            duration: 0.85,
-            times: [0, 0.15, 0.25, 0.5, 1],
-            ease: 'easeOut',
-            delay: 0.2
+            duration: 1.1,
+            ease: [0.16, 1, 0.3, 1],
+            delay: 0.15
           }}
         />
 
@@ -143,14 +161,13 @@ export function TimeDisplay({ activeCarIndex = 0 }: TimeDisplayProps) {
           }}
           initial={{ scaleX: 0, opacity: 0 }}
           animate={{
-            scaleX: [0, 0.1, 0.08, 0.5, 1],
-            opacity: [0, 1, 0.5, 1, 1]
+            scaleX: 1,
+            opacity: 1
           }}
           transition={{
-            duration: 0.85,
-            times: [0, 0.15, 0.25, 0.5, 1],
-            ease: 'easeOut',
-            delay: 0.2
+            duration: 1.0,
+            ease: [0.16, 1, 0.3, 1],
+            delay: 0.15
           }}
         />
         {/* --- LAMP EFFECT END --- */}
@@ -167,7 +184,7 @@ export function TimeDisplay({ activeCarIndex = 0 }: TimeDisplayProps) {
           }}
           initial={{ width: 0 }}
           animate={{ width: `${elapsedPercentage}%` }}
-          transition={{ duration: 1.8, ease: 'easeOut', delay: 0.9 }}
+          transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1], delay: 1.1 }}
         />
       </div>
     </div>
