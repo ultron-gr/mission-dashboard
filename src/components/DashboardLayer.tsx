@@ -1,0 +1,131 @@
+import { motion, useAnimation } from 'framer-motion';
+import { TimeDisplay } from './TimeDisplay';
+import { BugattiScene } from './BugattiScene';
+import { MoneyProgress } from './MoneyProgress';
+import { MinimalEditor } from './MinimalEditor';
+import { useState, useEffect } from 'react';
+
+interface DashboardLayerProps {
+  dragControls: any;
+  isRevealed: boolean;
+  setIsRevealed: (v: boolean) => void;
+  savedAmount: number;
+  targetPrice: number;
+  setSavedAmount: (val: number) => void;
+  setTargetPrice: (val: number) => void;
+}
+
+export function DashboardLayer({
+  dragControls,
+  isRevealed,
+  setIsRevealed,
+  savedAmount,
+  targetPrice,
+  setSavedAmount,
+  setTargetPrice,
+}: DashboardLayerProps) {
+  const [editorMode, setEditorMode] = useState<'savings' | 'target' | null>(null);
+  const controls = useAnimation();
+
+  // Control the y position based on isRevealed
+  useEffect(() => {
+    if (isRevealed) {
+      controls.start({ y: window.innerHeight * 0.85, transition: { type: 'spring', damping: 20, stiffness: 100 } });
+    } else {
+      controls.start({ y: 0, transition: { type: 'spring', damping: 25, stiffness: 150 } });
+    }
+  }, [isRevealed, controls]);
+
+  const handleDragEnd = (e: any, info: any) => {
+    // Threshold to reveal or hide
+    if (!isRevealed && info.offset.y > 100) {
+      setIsRevealed(true);
+    } else if (isRevealed && info.offset.y < -50) {
+      setIsRevealed(false);
+    } else {
+      // Snap back to current state if threshold not met
+      setIsRevealed(isRevealed);
+      // Force trigger the effect above
+      controls.start({ y: isRevealed ? window.innerHeight * 0.85 : 0 });
+    }
+  };
+
+  const handleSave = (val: string) => {
+    const num = Number(val) || 0;
+    if (editorMode === 'savings') setSavedAmount(num);
+    if (editorMode === 'target') setTargetPrice(num);
+  };
+
+  return (
+    <motion.div
+      drag="y"
+      dragControls={dragControls}
+      dragListener={false} 
+      dragConstraints={{ top: 0, bottom: window.innerHeight * 0.85 }}
+      dragElastic={0.2}
+      onDragEnd={handleDragEnd}
+      animate={controls}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'radial-gradient(circle at top center, #2a1100 0%, var(--bg-color) 100%)',
+        zIndex: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        boxShadow: '0 -10px 50px rgba(0,0,0,0.8)', // Shadow for depth
+      }}
+    >
+      {/* Top drag handle indicator */}
+      <div 
+        onPointerDown={(e) => dragControls.start(e)}
+        style={{
+          height: '60px', // slightly taller for easier thumb grab
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          cursor: 'grab',
+          touchAction: 'none'
+        }}
+      >
+        <div style={{ width: '50px', height: '4px', background: '#333', borderRadius: '2px' }} />
+      </div>
+
+      <div 
+        style={{ 
+          flex: 1, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          justifyContent: 'space-between', 
+          paddingBottom: '3rem',
+          opacity: isRevealed ? 0.3 : 1, // dim the dashboard when revealed
+          pointerEvents: isRevealed ? 'none' : 'auto', // disable interactions when pushed down
+          transition: 'opacity 0.3s'
+        }}
+      >
+        <TimeDisplay />
+        
+        <BugattiScene />
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <MoneyProgress 
+            savedAmount={savedAmount} 
+            targetPrice={targetPrice} 
+            onClick={() => setEditorMode('savings')}
+          />
+        </div>
+      </div>
+
+      <MinimalEditor
+        isOpen={!!editorMode}
+        onClose={() => setEditorMode(null)}
+        title={editorMode === 'savings' ? 'UPDATE SAVED AMOUNT' : 'UPDATE TARGET PRICE'}
+        initialValue={editorMode === 'savings' ? savedAmount : targetPrice}
+        isNumeric={true}
+        onSave={handleSave}
+      />
+    </motion.div>
+  );
+}
