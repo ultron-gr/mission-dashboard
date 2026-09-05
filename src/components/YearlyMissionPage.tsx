@@ -120,6 +120,7 @@ export function YearlyMissionPage() {
 
       {editorMode && (
         <MinimalEditor
+          isOpen={!!editorMode}
           initialValue={(goalState[editorMode] || '').toString()}
           onSave={(val) => {
             const numericFields = ['targetAmount', 'savedAmount'];

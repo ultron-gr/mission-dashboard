@@ -6,7 +6,6 @@ export const TARGET_DATE = new Date('2066-07-13T00:00:00');
 export function getTimeStats() {
   const now = new Date();
   
-  const totalDays = differenceInDays(TARGET_DATE, START_DATE);
   const remainingDays = differenceInDays(TARGET_DATE, now);
 
   // More precise percentage using milliseconds

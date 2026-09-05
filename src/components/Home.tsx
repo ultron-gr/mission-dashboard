@@ -33,17 +33,6 @@ export function Home() {
     });
   };
 
-  const setGoal = (year: string, text: string) => {
-    updateState(draft => {
-      if (!draft.yearlyGoals[year]) {
-        draft.yearlyGoals[year] = { goal: text, targetAmount: null, notes: '', savedAmount: 0, completed: false };
-      } else {
-        draft.yearlyGoals[year].goal = text;
-      }
-      return draft;
-    });
-  };
-
   // Map state.yearlyGoals back to simple string record for the YearlyGoalsLayer compatibility
   const legacyGoalsRecord: Record<string, string> = {};
   Object.keys(state.yearlyGoals).forEach(year => {

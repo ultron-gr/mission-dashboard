@@ -3,7 +3,7 @@ import { TimeDisplay } from './TimeDisplay';
 import { BugattiScene } from './BugattiScene';
 import { MoneyProgress } from './MoneyProgress';
 import { MinimalEditor } from './MinimalEditor';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import type { SavingsPoint } from '../services/persistence/schema';
 
@@ -31,7 +31,7 @@ export function DashboardLayer({
   const [editorMode, setEditorMode] = useState<'savings' | 'target' | null>(null);
   const [activeCarIndex, setActiveCarIndex] = useState(0);
 
-  const handleDragEnd = (e: any, info: any) => {
+  const handleDragEnd = (_: any, info: any) => {
     // Threshold to reveal or hide
     if (!isRevealed && info.offset.y > 100) {
       setIsRevealed(true);
