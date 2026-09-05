@@ -58,13 +58,56 @@ export function TimeDisplay() {
         {formattedDays}
       </motion.div>
 
-      {/* Danger Progress Bar */}
-      <div style={{ width: '80%', maxWidth: '300px', height: '4px', background: '#111', marginTop: '1.5rem', position: 'relative', overflow: 'hidden' }}>
+      {/* Danger Progress Bar Container with Lamp Effect */}
+      <div style={{ 
+        width: '80%', maxWidth: '300px', height: '4px', background: '#111', 
+        marginTop: '1.5rem', position: 'relative', overflow: 'visible',
+        borderRadius: '2px'
+      }}>
+        
+        {/* --- LAMP EFFECT START --- */}
+        {/* Main downward spotlight beam */}
+        <div style={{
+          position: 'absolute',
+          top: '4px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '300px', // Slightly wider for a softer fade
+          height: '140px',
+          background: 'conic-gradient(from 90deg at 50% -10%, transparent 0deg, rgba(255, 42, 0, 0.4) 90deg, transparent 180deg)',
+          filter: 'blur(15px)',
+          opacity: 0.9,
+          zIndex: -1,
+          pointerEvents: 'none',
+          WebkitMaskImage: 'radial-gradient(circle at top, black 0%, transparent 70%)',
+          maskImage: 'radial-gradient(circle at top, black 0%, transparent 70%)'
+        }} />
+
+        {/* Core bright glow at the source line */}
+        <div style={{
+          position: 'absolute',
+          top: '-1px', // slightly above to center on the bar
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '120px',
+          height: '2px',
+          background: 'rgba(255, 42, 0, 0.8)',
+          filter: 'blur(2px)',
+          boxShadow: '0 0 15px 4px rgba(255, 42, 0, 0.5), 0 0 40px 15px rgba(255, 42, 0, 0.15)',
+          zIndex: 1,
+          pointerEvents: 'none'
+        }} />
+        {/* --- LAMP EFFECT END --- */}
+
+        {/* Actual Progress Fill */}
         <motion.div
           style={{ 
             height: '100%', 
             background: dangerClass, 
-            boxShadow: shadowClass 
+            boxShadow: shadowClass,
+            position: 'relative',
+            zIndex: 2,
+            borderRadius: '2px'
           }}
           initial={{ width: 0 }}
           animate={{ width: `${elapsedPercentage}%` }}

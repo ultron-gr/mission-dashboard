@@ -5,12 +5,15 @@ import { MoneyProgress } from './MoneyProgress';
 import { MinimalEditor } from './MinimalEditor';
 import { useState, useEffect } from 'react';
 
+import type { SavingsPoint } from '../services/persistence/schema';
+
 interface DashboardLayerProps {
   dragControls: any;
   isRevealed: boolean;
   setIsRevealed: (v: boolean) => void;
   savedAmount: number;
   targetPrice: number;
+  savingsHistory: SavingsPoint[];
   setSavedAmount: (val: number) => void;
   setTargetPrice: (val: number) => void;
 }
@@ -21,6 +24,7 @@ export function DashboardLayer({
   setIsRevealed,
   savedAmount,
   targetPrice,
+  savingsHistory,
   setSavedAmount,
   setTargetPrice,
 }: DashboardLayerProps) {
@@ -109,10 +113,11 @@ export function DashboardLayer({
         
         <BugattiScene />
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0 1rem' }}>
           <MoneyProgress 
-            savedAmount={savedAmount} 
+            savedAmount={savedAmount}
             targetPrice={targetPrice} 
+            savingsHistory={savingsHistory}
             onClick={() => setEditorMode('savings')}
           />
         </div>

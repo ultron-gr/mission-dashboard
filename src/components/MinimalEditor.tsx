@@ -8,9 +8,10 @@ interface MinimalEditorProps {
   initialValue: string | number;
   onSave: (val: string) => void;
   isNumeric?: boolean;
+  type?: string;
 }
 
-export function MinimalEditor({ isOpen, onClose, title, initialValue, onSave, isNumeric }: MinimalEditorProps) {
+export function MinimalEditor({ isOpen, onClose, title, initialValue, onSave, isNumeric, type }: MinimalEditorProps) {
   const [val, setVal] = useState(String(initialValue));
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export function MinimalEditor({ isOpen, onClose, title, initialValue, onSave, is
           
           {isNumeric ? (
             <input
-              type="number"
+              type={type || (isNumeric ? "number" : "text")}
               value={val}
               onChange={(e) => setVal(e.target.value)}
               className="font-mono text-primary"
